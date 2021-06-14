@@ -1,0 +1,27 @@
+---
+- name: Install the katello rpm
+  shell: rpm -Uvh "https://jboss-topic.usersys.redhat.com/pub/katello-ca-consumer-jboss-topic.usersys.redhat.com-1.0-3.noarch.rpm" --force
+  ignore_errors: yes
+
+- name: Register the node to the Satellite 6 server
+  command: subscription-manager register --org="JBoss_Toronto" --activationkey="ansible-middleware" --force
+
+- name: Subscribe to JBoss Web Server CDN repositories
+  shell: subscription-manager repos --enable="{{ item }}"
+  loop:
+    - jws-5-for-rhel-8-x86_64-rpms
+
+- name: Install JBoss Web Server
+  yum:
+    name: "@jws5"
+    state: latest
+    
+- name: Enable tomcat service
+  ansible.builtin.service:
+    name: jws5-tomcat.service
+    enabled: yes
+
+- name: start tomcat service
+  ansible.builtin.service:
+    name: jws5-tomcat.service
+    state: started

@@ -1,0 +1,34 @@
+---
+- hosts: localhost
+  gather_facts: true
+  vars:
+    JAVA_HOME: "/usr/lib/jvm/jre-1.8.0-openjdk.x86_64"
+  roles:
+    - jws
+  tasks:
+    - name: Check is port 8080 is open
+      wait_for:
+        host: localhost
+        port: 8080
+        state: started         
+        delay: 0
+        timeout: 3
+
+    - name: Deploy the demo app
+      get_url:
+        url: "{{ app_url }}"
+        dest: "{{ app }}"
+        force: yes
+
+    -  name: restart tomcat service
+       ansible.builtin.service:
+          name: jws5-tomcat.service
+          state: restarted
+    
+    - name: Check is port 8080 is open after restart
+      wait_for:
+        host: localhost
+        port: 8080
+        state: started         
+        delay: 0
+        timeout: 3
