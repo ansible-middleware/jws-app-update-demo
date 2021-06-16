@@ -1,6 +1,11 @@
 ---
+- get_url:
+    url: "{{ jws.katello.rpm.url }}"
+    dest: "{{ jws.katello.rpm.dest }}"
+    validate_certs: no
+
 - name: Install the katello rpm
-  shell: rpm -Uvh "https://jboss-topic.usersys.redhat.com/pub/katello-ca-consumer-jboss-topic.usersys.redhat.com-1.0-3.noarch.rpm" --force
+  shell: rpm -Uvh "{{ jws.katello.rpm.dest }}" --force
   ignore_errors: yes
 
 - name: Register the node to the Satellite 6 server
