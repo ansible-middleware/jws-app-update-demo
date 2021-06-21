@@ -6,6 +6,16 @@
   roles:
     - jws
   tasks:
+
+    - name: "Check that required parameters are provided"
+      ansible.builtin.assert:
+        that:
+          - app is defined
+          - app != ""
+          - app_url is defined
+          - app_url != ""
+        quiet: true
+
     - name: Check is port 8080 is open
       wait_for:
         host: localhost
