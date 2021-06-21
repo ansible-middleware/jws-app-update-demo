@@ -29,11 +29,7 @@
         url: "{{ app_url }}"
         dest: "{{ app }}"
         force: yes
-
-    - name: restart tomcat service
-      ansible.builtin.service:
-        name: jws5-tomcat.service
-        state: restarted
+      notify: restart tomcat service
 
     - name: Check is port 8080 is open after restart
       ansible.builtin.wait_for:
@@ -42,3 +38,9 @@
         state: started
         delay: 0
         timeout: 3
+
+  handlers:
+    - name: restart tomcat service
+      ansible.builtin.service:
+        name: jws5-tomcat.service
+        state: restarted

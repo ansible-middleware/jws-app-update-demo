@@ -1,9 +1,14 @@
 ---
+- stat:
+    path: /var/opt/rh/scls/jws5
+  register: jws_install_dir
 
 - name: "Install JWS with package {{ jws.package }}"
   ansible.builtin.command: "yum group -y install {{ jws.package }}"
   when:
     - jws.package is defined
+    - jws_install_dir.stat is defined
+    - not jws_install_dir.stat.exists
 
 - name: Enable tomcat service
   ansible.builtin.service:
