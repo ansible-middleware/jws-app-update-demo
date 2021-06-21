@@ -1,34 +1,26 @@
 ---
 - stat:
-    path: /usr/bin/katello-rhsm-consumer
-  register: is_katello_installed
+    path: "{{ jws.catalina.home }}"
+  register: jws_install_dir
 
-- block:
-  - get_url:
-      url: "{{ jws.katello.rpm.url }}"
-      dest: "{{ jws.katello.rpm.dest }}"
-      validate_certs: no
-
-  - name: Install the katello rpm
-    shell: rpm -Uvh "{{ jws.katello.rpm.dest }}" --force
-    ignore_errors: yes
+- name: "Install JWS with package {{ jws.package }}"
+  ansible.builtin.command: "yum group -y install {{ jws.package }}"
   when:
-    - is_katello_installed is defined
-    - is_katello_installed.stat is defined
-    - not is_katello_installed.stat.exists
+    - jws.package is defined
+    - jws_install_dir.stat is defined
+    - not jws_install_dir.stat.exists
 
-- name: Register the node to the Satellite 6 server
-  command: subscription-manager register --org="JBoss_Toronto" --activationkey="ansible-middleware" --force
-
-- name: Subscribe to JBoss Web Server CDN repositories
-  shell: subscription-manager repos --enable="{{ item }}"
-  loop:
-    - jws-5-for-rhel-8-x86_64-rpms
-
-- name: Install JBoss Web Server
-  yum:
-    name: "@jws5"
-    state: latest
+- name: "Install JWS with zipfile from RHN: {{ jws.rhn_url }}"
+  redhat_csp_download:
+    url: "{{ jws.rhn_url }}"
+    dest: "{{  jws.catalina.home }}"
+    username: "{{ rhn_username }}"
+    password: "{{ rhn_password }}"
+  register: csp_jboss_eap_download
+  when:
+    - jws.rhn_url is defined
+    - jws_install_dir.stat is defined
+    - not jws_install_dir.stat.exists
 
 - name: Enable tomcat service
   ansible.builtin.service:
