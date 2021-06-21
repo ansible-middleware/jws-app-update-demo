@@ -3,15 +3,15 @@
   gather_facts: true
   vars:
     JAVA_HOME: "/usr/lib/jvm/jre-1.8.0-openjdk.x86_64"
+    app_name: simple-webapp.war
   roles:
     - jws
+    - sabre1041.redhat-csp-download
   tasks:
 
     - name: "Check that required parameters are provided"
       ansible.builtin.assert:
         that:
-          - app is defined
-          - app != ""
           - app_url is defined
           - app_url != ""
         quiet: true
@@ -27,7 +27,7 @@
     - name: Deploy the demo app
       ansible.builtin.get_url:
         url: "{{ app_url }}"
-        dest: "{{ app }}"
+        dest: "{{ jws.catalina.home }}/{{ app_name }}"
         force: yes
       notify: restart tomcat service
 

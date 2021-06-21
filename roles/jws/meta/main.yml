@@ -1,0 +1,4 @@
+---
+dependencies:
+  - {role: sabre1041.redhat-csp-download}
+
