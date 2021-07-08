@@ -21,7 +21,7 @@ checkout the middleware_automation.jws project and build the collection:
 
 Once the collection has been properly created, you can install it using ansible-galaxy (not that it will download the required dependency):
 
-    $ ansible-galaxy install middleware_automation-jws-0.0.1.tar.gz
+    $ ansible-galaxy collection install middleware_automation-jws-0.0.1.tar.gz
     Process install dependency map
     Starting collection install process
     Installing 'middleware_automation.jws:0.0.1' to '/root/.ansible/collections/ansible_collections/middleware_automation/jws'
