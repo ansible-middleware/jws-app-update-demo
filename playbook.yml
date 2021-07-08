@@ -44,6 +44,11 @@
   tasks:
     - include_tasks: tasks/deploy_app.yml
   post_tasks:
+
+    - name: Pause for 10s just to ensure Tomcat has finished restarting
+      pause:
+        seconds: 10
+
     - set_fact:
         result_file: /tmp/rest.txt
 
