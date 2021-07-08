@@ -43,3 +43,20 @@
 
   tasks:
     - include_tasks: tasks/deploy_app.yml
+  post_tasks:
+    - set_fact:
+        result_file: /tmp/rest.txt
+
+    - get_url:
+        url: http://localhost:8080/simple-webapp/
+        dest: "{{ result_file }}"
+      register: res
+
+    - assert:
+        that:
+          - res is defined
+          - res.status_code == 200
+        quiet: true
+
+    - debug:
+        msg: "{{ lookup('file', result_file) }}"
