@@ -29,6 +29,11 @@
           - tomcat_zipfile is defined
         quiet: true
 
+    - name: "Install python packages required by JWS role"
+      include_tasks: tasks/fastpackage.yml
+      vars:
+        package_name: 'python3-lxml'
+
     - name: "Install JWS with zipfile from RHN"
       redhat_csp_download:
         url: "{{ tomcat_rhn_download_url }}"
