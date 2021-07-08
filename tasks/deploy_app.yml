@@ -1,0 +1,32 @@
+---
+- name: "Check that required parameters are provided"
+  ansible.builtin.assert:
+    that:
+      - app_url is defined
+      - app_url != ""
+      - tomcat is defined
+      - tomcat.home is defined
+      - tomcat.home != ""
+    quiet: true
+
+- stat:
+    path: "{{ tomcat.home }}"
+  register: tc_home
+
+- debug:
+    msg: "{{ tc_home }}"
+
+- assert:
+    that:
+      - tc_home is defined
+      - tc_home.stat is defined
+      - tc_home.stat.exists
+      - tc_home.stat.isdir 
+    quiet: true
+
+- name: Deploy the demo app
+  ansible.builtin.get_url:
+    url: "{{ app_url }}"
+    dest: "{{ tomcat.home }}/webapps/{{ app_name }}"
+    force: yes
+  notify: Restart Tomcat service
