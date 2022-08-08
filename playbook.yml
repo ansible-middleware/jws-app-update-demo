@@ -1,68 +1,9 @@
 ---
-- hosts: all
-  become: true
-  gather_facts: true
-  vars:
-    JAVA_HOME: "/usr/lib/jvm/jre-1.8.0-openjdk.x86_64"
-    app_name: simple-webapp.war
-    # tomcat installation settings
-    tomcat_setup: true
-    tomcat_install_method: local_zipfiles
-    tomcat_install_dir: /opt
-    tomcat_zipfile: "{{ tomcat_install_dir }}/jws-5.4.zip"
-    tomcat_home: "{{ tomcat_install_dir }}/jws-5.4/tomcat"
-    tomcat_service_name: tomcat
-    tomcat_rhn_download_url: https://access.redhat.com/jbossnetwork/restricted/softwareDownload.html?softwareId=90341
-    # install Java using RPM
-    tomcat_java_version: 1.8.0
-    # enable tomcat as service (systemd integration)
-    tomcat_systemd_enabled: True
-  collections:
-    - middleware_automation.redhat_csp_download
-    - middleware_automation.jws
-  roles:
-    - jws
-  pre_tasks:
-    - assert:
-        that:
-          - rhn_username is defined
-          - rhn_password is defined
-          - tomcat_zipfile is defined
-        quiet: true
+- name: "Set up JWS server and deploy webapp 1.0"
+  ansible.builtin.import_playbook: install_jws_and_webapp.yml
 
-    - name: "Install python packages required by JWS role"
-      include_tasks: tasks/fastpackage.yml
-      vars:
-        package_name: 'python3-lxml'
-
-    - name: "Install JWS with zipfile from RHN"
-      redhat_csp_download:
-        url: "{{ tomcat_rhn_download_url }}"
-        dest: "{{ tomcat_zipfile }}"
-        username: "{{ rhn_username }}"
-        password: "{{ rhn_password }}"
-
-  tasks:
-    - include_tasks: tasks/deploy_app.yml
-  post_tasks:
-
-    - name: Pause for 10s just to ensure Tomcat has finished restarting
-      pause:
-        seconds: 10
-
-    - set_fact:
-        result_file: /tmp/rest.txt
-
-    - get_url:
-        url: http://localhost:8080/simple-webapp/
-        dest: "{{ result_file }}"
-      register: res
-
-    - assert:
-        that:
-          - res is defined
-          - res.status_code == 200
-        quiet: true
-
-    - debug:
-        msg: "{{ lookup('file', result_file) }}"
+- name: "Update webapp to 1.1"
+  ansible.builtin.import_playbook: update_to_1.1.yml
+  
+- name: "Downgrade webapp to 1.0"
+  ansible.builtin.import_playbook: downgrade_to_1.0.yml

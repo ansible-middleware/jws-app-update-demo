@@ -4,19 +4,18 @@
     that:
       - app_url is defined
       - app_url != ""
-      - tomcat is defined
-      - tomcat.home is defined
-      - tomcat.home != ""
+      - tomcat_home is defined
+      - tomcat_home != ""
     quiet: true
 
-- stat:
-    path: "{{ tomcat.home }}"
+- ansible.builtin.stat:
+    path: "{{ tomcat_home }}"
   register: tc_home
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ tc_home }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - tc_home is defined
       - tc_home.stat is defined
@@ -27,6 +26,6 @@
 - name: Deploy the demo app
   ansible.builtin.get_url:
     url: "{{ app_url }}"
-    dest: "{{ tomcat.home }}/webapps/{{ app_name }}"
+    dest: "{{ tomcat_home }}/webapps/{{ app_name }}"
     force: yes
   notify: Restart Tomcat service

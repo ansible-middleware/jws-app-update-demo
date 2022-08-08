@@ -1,0 +1,4 @@
+---
+- ansible.builtin.import_playbook: install_jws_and_webapp.yml
+  vars:
+    app_version: 1.1
