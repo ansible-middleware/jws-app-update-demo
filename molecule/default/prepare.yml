@@ -1,10 +1,23 @@
 ---
 - name: Prepare
   hosts: all
+  vars_files:
+    - ../../vars.yml
   tasks:
+    - ansible.builtin.set_fact:
+        down_server: "{{ lookup('env','MIDDLEWARE_DOWNLOAD_RELEASE_SERVER_URL') }}"
 
-    - name: Install required packages
-      ansible.builtin.package:
-        name:
-          - sudo
-        state: present
+    - ansible.builtin.assert:
+        that:
+          - down_server is defined
+          - down_server | length > 0
+        quiet: True
+
+    - name: "Download and deploy JWS zips from {{ assets_server }}"
+      ansible.builtin.get_url:
+        url: "{{ item }}"
+        dest: "{{ tomcat.install_dir }}"
+        validate_certs: no
+      loop:
+        - "{{ assets_server }}/webserver/5.6.0/jws-5.6.0-application-server.zip"
+        - "{{ assets_server }}/webserver/5.6.0/jws-5.6.0-application-server-RHEL8-x86_64.zip"
