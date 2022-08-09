@@ -1,0 +1,10 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+
+    - name: Install required packages
+      ansible.builtin.package:
+        name:
+          - sudo
+        state: present
