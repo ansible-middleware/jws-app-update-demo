@@ -1,0 +1,21 @@
+---
+# JWS installation settings
+tomcat_setup: true
+tomcat_install_method: local_zipfiles
+tomcat_install_dir: /opt
+jboss_web_version: '5.6'
+tomcat_home: "/opt/jws-{{ jboss_web_version }}/tomcat/"
+tomcat_zipfile: "jws-{{ jboss_web_version }}.0-application-server.zip"
+tomcat_listen_http_bind_address: 127.0.0.1
+tomcat_systemd_enabled: True
+tomcat_service_name: jws
+# install Java using RPM
+tomcat_java_version: 1.8.0
+app_id: simple-webapp
+# override the following vars to deploy 1.1
+app_version: 1.0
+app_name: "{{ app_id }}.war"
+app_url: "https://people.redhat.com/~rpelisse/{{ app_id }}-{{ app_version }}.war"
+app_path: "/{{ app_id }}"
+jws_up_wait_time: 10
+path_to_result_file: /tmp/results.txt

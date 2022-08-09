@@ -13,11 +13,11 @@
           - down_server | length > 0
         quiet: True
 
-    - name: "Download and deploy JWS zips from {{ assets_server }}"
+    - name: "Download and deploy JWS zips from {{ down_server }}"
       ansible.builtin.get_url:
         url: "{{ item }}"
-        dest: "{{ tomcat.install_dir }}"
+        dest: "{{ tomcat_install_dir }}"
         validate_certs: no
       loop:
-        - "{{ assets_server }}/webserver/5.6.0/jws-5.6.0-application-server.zip"
-        - "{{ assets_server }}/webserver/5.6.0/jws-5.6.0-application-server-RHEL8-x86_64.zip"
+        - "{{ down_server }}/webserver/5.6.0/jws-5.6.0-application-server.zip"
+        - "{{ down_server }}/webserver/5.6.0/jws-5.6.0-application-server-RHEL8-x86_64.zip"
