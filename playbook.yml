@@ -4,6 +4,6 @@
 
 - name: "Update webapp to 1.1"
   ansible.builtin.import_playbook: update_to_1.1.yml
-  
+
 - name: "Downgrade webapp to 1.0"
   ansible.builtin.import_playbook: downgrade_to_1.0.yml
