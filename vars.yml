@@ -1,21 +1,28 @@
 ---
+jws_user: tomcat
+jws_uid: 53
+jws_group: tomcat
+jws_gid: 53
 # JWS installation settings
-tomcat_setup: true
-tomcat_install_method: local_zipfiles
-tomcat_install_dir: /opt
-jboss_web_version: '5.6'
-tomcat_home: "/opt/jws-{{ jboss_web_version }}/tomcat/"
-tomcat_zipfile: "jws-{{ jboss_web_version }}.0-application-server.zip"
-tomcat_listen_http_bind_address: 127.0.0.1
-tomcat_systemd_enabled: True
-tomcat_service_name: jws
+jws_setup: True
+jws_install_method: zipfiles
+jws_install_dir: /opt
+#tomcat_version: 10.1.13
+jws_home: "/opt/apache-tomcat-{{ tomcat_version }}/"
+#jws_firewalld_enabled: True
+jws_listen_http_port: 8080
+jws_service_name: tomcat
+jws_listen_http_bind_address: 127.0.0.1
+jws_systemd_enabled: True
+jws_service_systemd_type: forking
+jws_selinux_enabled: False
 # install Java using RPM
-tomcat_java_version: 1.8.0
-app_id: simple-webapp
+jws_java_version: 11
+app_id: sample
 # override the following vars to deploy 1.1
 app_version: 1.0
 app_name: "{{ app_id }}.war"
-app_url: "https://people.redhat.com/~rpelisse/{{ app_id }}-{{ app_version }}.war"
-app_path: "/{{ app_id }}"
+app_url: "https://github.com/RanabirChakraborty/demo-files/raw/main/jws-app-update-demo/{{ app_id }}-{{ app_version }}.war"
+app_path: "{{ app_id }}"
 jws_up_wait_time: 10
 path_to_result_file: /tmp/results.txt

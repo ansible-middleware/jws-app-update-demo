@@ -6,7 +6,7 @@ This playbook demonstrate how to install and upgrade Apache Tomcat (or JBoss Web
 
 This demo has been tested on a RHEL 8.4 system using Ansible 2.9.22 (as provided by Red Hat) running wit Python3.
 
-    $ ansible-galaxy collection install redhat.jws
+    $ ansible-galaxy collection install middleware_automation.jws
 
 This collection is available on Automation Hub. For Ansible Galaxy to be able to download, the ansible.cfg needs to be configured to use it:
 

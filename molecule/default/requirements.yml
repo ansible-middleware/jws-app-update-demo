@@ -2,4 +2,4 @@
 collections:
   - name: community.general
   - name: community.docker
-  - name: redhat.jws
+  - name: middleware_automation.jws
