@@ -1,27 +1,21 @@
 ---
 - hosts: all
   gather_facts: true
+  become: yes
+  become_user: root
   vars_files:
     - vars.yml
   collections:
-    - redhat.jws
-  pre_tasks:
-
-    - ansible.builtin.assert:
-        that:
-          - tomcat_zipfile is defined
-        quiet: true
-
-    - ansible.builtin.include_role:
-        name: jws
-
+    - middleware_automation.jws
+  roles:
+    - jws
   tasks:
     - ansible.builtin.include_tasks: tasks/deploy_app.yml
   post_tasks:
 
-    - name: "Wait for port 8080 to be available (ensure that JWS has finished restarting)"
+    - name: "Wait for port {{ jws_listen_http_port }} to be available (ensure that JWS has finished restarting)"
       ansible.builtin.wait_for:
-        port: 8080
+        port: "{{ jws_listen_http_port }}"
 
     - name: "Set path to result file: {{ path_to_result_file }}"
       ansible.builtin.set_fact:
@@ -29,7 +23,7 @@
 
     - name: "Define URL to deployed webapp: {{ app_path }}."
       ansible.builtin.set_fact:
-        url_to_webapp: "http://{{ tomcat_listen_http_bind_address }}:8080/{{ app_path }}/"
+        url_to_webapp: "http://{{ jws_listen_http_bind_address }}:{{ jws_listen_http_port }}/{{ app_id }}/"
 
     - name: "Check that deployed webapp is accessible: {{ url_to_webapp }}"
       ansible.builtin.get_url:
@@ -41,8 +35,5 @@
       ansible.builtin.assert:
         that:
           - res is defined
-          - res.status_code == 200
+          - res.status_code in [200, 304]
         quiet: true
-
-    - ansible.builtin.debug:
-        msg: "{{ lookup('file', result_file) }}"

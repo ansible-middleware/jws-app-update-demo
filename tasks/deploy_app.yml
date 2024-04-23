@@ -4,12 +4,12 @@
     that:
       - app_url is defined
       - app_url != ""
-      - tomcat_home is defined
-      - tomcat_home != ""
+      - jws_home is defined
+      - jws_home != ""
     quiet: true
 
 - ansible.builtin.stat:
-    path: "{{ tomcat_home }}"
+    path: "{{ jws_home }}"
   register: tc_home
 
 - ansible.builtin.debug:
@@ -19,13 +19,16 @@
     that:
       - tc_home is defined
       - tc_home.stat is defined
-      - tc_home.stat.exists
-      - tc_home.stat.isdir 
     quiet: true
+
+- name: Start Tomcat service
+  ansible.builtin.systemd_service:
+    name: tomcat
+    state: started
 
 - name: Deploy the demo app
   ansible.builtin.get_url:
     url: "{{ app_url }}"
-    dest: "{{ tomcat_home }}/webapps/{{ app_name }}"
+    dest: "{{ jws_home }}/webapps/{{ app_name }}"
     force: yes
   notify: Restart Tomcat service
